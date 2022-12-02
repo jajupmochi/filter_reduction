@@ -1,53 +1,43 @@
 import argparse
 
 import numpy as np
-from sklearn.exceptions import UndefinedMetricWarning
+from grakel import graph_from_networkx
+from grakel.kernels import WeisfeilerLehman, VertexHistogram
 from sklearn.model_selection import GridSearchCV, KFold
 from sklearn.model_selection import StratifiedKFold, cross_validate
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.pipeline import make_pipeline
-from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
 
-from utils import load_singleton_graphs_from_TUDataset, get_file_results, save_cv_predictions
+from utils import get_file_results, save_cv_predictions, load_graphs, make_hashable_attr
 
-import warnings
-
-warnings.filterwarnings('ignore', category=UndefinedMetricWarning)
 NODE_ATTRIBUTE = 'x'
 
-CLF_METHODS = {
-    'knn': (KNeighborsClassifier, {'kneighborsclassifier__n_neighbors': [3, 5, 7, 9, 11]}),
-    'rbf': (SVC, {'svc__C': np.logspace(-3, 3, 7)})
-}
 
-from collections import Counter
-
-
-def singleton_classification(root_dataset: str,
-                             dataset: str,
-                             use_degree: bool,
-                             classifier: str,
-                             n_trials: int,
-                             folder_results: str):
+def gk_classification(root_dataset: str,
+                      dataset: str,
+                      n_trials: int,
+                      folder_results: str,
+                      remove_node_attr: bool,
+                      use_degree: bool):
     """
 
     Args:
         root_dataset:
         dataset:
-        use_degree:
-        classifier:
         n_trials:
         folder_results:
 
     Returns:
 
     """
-    graphs, labels = load_singleton_graphs_from_TUDataset(root=root_dataset,
-                                                          dataset=dataset,
-                                                          node_attr=NODE_ATTRIBUTE,
-                                                          use_degree=use_degree)
-    clf_method, param_grid = CLF_METHODS[classifier]
+    nx_graphs, labels = load_graphs(root=root_dataset,
+                                    dataset=dataset,
+                                    node_attr=NODE_ATTRIBUTE,
+                                    remove_node_attr=remove_node_attr,
+                                    use_degree=use_degree)
+    make_hashable_attr(nx_graphs, node_attr='x')
+    grakel_graphs = [graph for graph in graph_from_networkx(nx_graphs,
+                                                            node_labels_tag='x',
+                                                            as_Graph=True)]
     trial_predictions = []
 
     scoring = {'acc': 'accuracy',
@@ -60,22 +50,24 @@ def singleton_classification(root_dataset: str,
 
     file_results = get_file_results(folder_results,
                                     dataset,
-                                    classifier,
+                                    'WL',
                                     use_degree,
-                                    False)
+                                    remove_node_attr)
 
+    gk = WeisfeilerLehman(n_iter=4, base_graph_kernel=VertexHistogram, normalize=True)
+    K_graphs = gk.fit_transform(grakel_graphs)
+    param_grid = {'C': np.logspace(-2, 2, 5)}
     for c_seed in range(n_trials):
         outer_cv = StratifiedKFold(n_splits=10, shuffle=True, random_state=c_seed)
         inner_cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=c_seed)
 
-        pipe_clf = make_pipeline(StandardScaler(),
-                                 clf_method())
-        clf = GridSearchCV(estimator=pipe_clf,
+        clf = GridSearchCV(estimator=SVC(kernel='precomputed'),
                            param_grid=param_grid,
                            n_jobs=5,
                            cv=inner_cv)
+
         test_predictions = cross_validate(clf,
-                                          graphs,
+                                          K_graphs,
                                           labels,
                                           cv=outer_cv,
                                           scoring=scoring,
@@ -95,7 +87,7 @@ def main(args):
     Returns:
 
     """
-    singleton_classification(**vars(args))
+    gk_classification(**vars(args))
 
 
 if __name__ == '__main__':
@@ -108,15 +100,12 @@ if __name__ == '__main__':
                         required=True,
                         type=str,
                         help='Name of the dataset')
-
+    parser.add_argument('--remove-node-attr',
+                        action='store_true',
+                        help='remove the node attributes if set to false')
     parser.add_argument('--use-degree',
                         action='store_true',
-                        help='Use the degree of the nodes during the graph reduction process')
-
-    parser.add_argument('--classifier',
-                        default='rbf',
-                        choices=['knn', 'rbf'],
-                        help='Classification method to use')
+                        help='if remove-node-attr is also True then it uses the degree of the nodes as attribute')
 
     parser.add_argument('--n-trials',
                         default=10,

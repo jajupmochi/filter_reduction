@@ -4,3 +4,8 @@ sklearn
 networkx
 torch
 tqdm
+jupyterlab
+matplotlib
+grakel
+Iprogress
+skorch

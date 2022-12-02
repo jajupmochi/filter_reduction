@@ -1,17 +1,21 @@
 import json
 import os
-import warnings
 from pathlib import Path
 from typing import List, Tuple
 
+import networkx as nx
 import numpy as np
 import torch
+import torch_geometric.utils as tutils
+from sklearn.exceptions import UndefinedMetricWarning
 from torch_geometric.data import Data
 from torch_geometric.datasets import TUDataset
 from torch_geometric.utils import degree
 from tqdm import tqdm
 
-warnings.filterwarnings('ignore')
+import warnings
+
+warnings.filterwarnings('ignore', category=UndefinedMetricWarning)
 
 
 def load_singleton_graphs_from_TUDataset(root: str,
@@ -37,13 +41,14 @@ def load_singleton_graphs_from_TUDataset(root: str,
 
     tmp_graph = dataset[0]
     is_graph_labelled = node_attr in tmp_graph.keys
+    is_graph_lbl_empty = tmp_graph.x.size(1) == 0 if is_graph_labelled else True
 
     # Convert the PyG graphs into singleton graphs
     graphs = []
     graph_labels = []
     for graph in tqdm(dataset, desc='Convert graph to singleton'):
 
-        if not is_graph_labelled:
+        if not is_graph_labelled or is_graph_lbl_empty:
             # Create graph with dummy node vector
             graph = Data(x=torch.tensor(np.ones((graph.num_nodes, 1))),
                          y=graph.y,
@@ -89,7 +94,8 @@ def get_folder_results(dataset: str, classifier: str) -> None:
 def get_file_results(folder_results: str,
                      dataset: str,
                      classifier: str,
-                     use_degree: bool) -> str:
+                     use_degree: bool,
+                     remove_node_labels: bool) -> str:
     """
 
     Args:
@@ -108,6 +114,72 @@ def get_file_results(folder_results: str,
 
     Path(root).mkdir(parents=True, exist_ok=True)
 
-    filename = f'results{"_use_degree" if use_degree else ""}.json'
+    degree = '_use_degree' if use_degree else ''
+    node_labels = '_without_node_labels' if remove_node_labels else ''
+
+    filename = f'results{degree}{node_labels}.json'
 
     return os.path.join(root, filename)
+
+
+def load_graphs(root: str,
+                dataset: str,
+                remove_node_attr: bool,
+                use_degree: bool,
+                node_attr: str = 'x') -> Tuple[List[nx.Graph], np.ndarray]:
+    """
+
+    Args:
+        root:
+        dataset:
+        node_attr:
+
+    Returns:
+
+    """
+    dataset = TUDataset(root=root, name=dataset)
+
+    tmp_graph = dataset[0]
+    is_graph_labelled = node_attr in tmp_graph.keys
+    is_graph_lbl_empty = tmp_graph.x.size(1) == 0 if is_graph_labelled else True
+
+    nx_graphs = []
+    graph_labels = []
+    for graph in tqdm(dataset, desc='Load Graphs'):
+        if not is_graph_labelled or is_graph_lbl_empty:
+            # Create graph with dummy node vector
+            degrees = degree(graph.edge_index[0], graph.num_nodes)
+            graph = Data(x=degrees,
+                         y=graph.y,
+                         edge_index=graph.edge_index)
+        if remove_node_attr:
+            if use_degree:
+                degrees = degree(graph.edge_index[0], graph.num_nodes)
+                graph.x = degrees
+            else:
+                graph.num_nodes = graph.x.shape[0]
+                graph.x = np.ones(graph.num_nodes)
+
+        nx_graph = tutils.to_networkx(graph,
+                                      node_attrs=[node_attr],
+                                      to_undirected=True)
+        nx_graphs.append(nx_graph)
+        graph_labels.append(int(graph.y))
+
+    graph_cls = np.array(graph_labels)
+    return nx_graphs, graph_cls
+
+
+def make_hashable_attr(nx_graphs: List[nx.Graph],
+                       node_attr: str = 'x') -> None:
+    """
+    Transform the node attribute `x` to str to be hashable.
+    Args:
+        nx_graphs:
+        node_attr:
+    Returns:
+    """
+    for nx_graph in nx_graphs:
+        for idx_node, data_node in nx_graph.nodes(data=True):
+            str_data = str(data_node[node_attr])
+            nx_graph.nodes[idx_node][node_attr] = str_data
