@@ -7,7 +7,6 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from skorch import NeuralNetClassifier
 from torch import nn
-from skorch.callbacks import EarlyStopping
 
 from utils import load_singleton_graphs_from_TUDataset, get_file_results, save_cv_predictions
 
@@ -88,8 +87,8 @@ def singleton_nn_classification(root_dataset: str,
                                     False)
 
     for c_seed in range(n_trials):
-        outer_cv = StratifiedKFold(n_splits=2, shuffle=True, random_state=c_seed)
-        inner_cv = StratifiedKFold(n_splits=2, shuffle=True, random_state=c_seed)
+        outer_cv = StratifiedKFold(n_splits=10, shuffle=True, random_state=c_seed)
+        inner_cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=c_seed)
 
         pipe_clf = Pipeline([
             ('scale', StandardScaler()),
