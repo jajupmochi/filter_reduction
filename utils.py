@@ -132,6 +132,8 @@ def load_graphs(root: str,
     Args:
         root:
         dataset:
+        remove_node_attr:
+        use_degree:
         node_attr:
 
     Returns:

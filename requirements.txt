@@ -9,3 +9,4 @@ matplotlib
 grakel
 Iprogress
 skorch
+pyparsing
