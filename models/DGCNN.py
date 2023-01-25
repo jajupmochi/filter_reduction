@@ -20,14 +20,25 @@ from torch.nn import functional as F
 from torch_geometric.nn import MessagePassing, global_sort_pool
 from torch_geometric.utils import add_self_loops, degree
 
+from torch_geometric.data import Batch
 
+import logging
+logging.captureWarnings(True)
 class DGCNN(nn.Module):
     """
     Uses fixed architecture
     """
 
-    def __init__(self, dim_features, dim_target, k, embedding_dim, num_layers, dense_dim=128):
+    def __init__(self,
+                 dataset,
+                 dim_features,
+                 dim_target,
+                 k,
+                 embedding_dim,
+                 num_layers,
+                 hidden_dense_dim):
         super(DGCNN, self).__init__()
+        self.dataset = dataset
 
         self.k = k
         self.embedding_dim = embedding_dim
@@ -53,13 +64,17 @@ class DGCNN(nn.Module):
         dense_dim = int((self.k - 2) / 2 + 1)
         self.input_dense_dim = (dense_dim - 5 + 1) * 32
 
-        self.hidden_dense_dim = dense_dim
+        self.hidden_dense_dim = hidden_dense_dim
         self.dense_layer = nn.Sequential(nn.Linear(self.input_dense_dim, self.hidden_dense_dim),
                                          nn.ReLU(),
                                          nn.Dropout(p=0.5),
                                          nn.Linear(self.hidden_dense_dim, dim_target))
 
-    def forward(self, data):
+    def forward(self, index):
+
+        # print(index)
+        # print(self.dataset[index])
+        data = Batch.from_data_list([self.dataset[i] for i in index])
         # Implement Equation 4.2 of the paper i.e. concat all layers' graph representations and apply linear model
         # note: this can be decomposed in one smaller linear model per layer
         x, edge_index, batch = data.x, data.edge_index, data.batch
