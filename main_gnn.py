@@ -78,7 +78,8 @@ def gnn_classification(root_dataset: str,
         module__dim_features=graphs[0].num_features,
         module__dim_target=len(set(y)),
         module__hidden_dense_dim=128,
-        callbacks=[EarlyStopping(monitor='valid_loss', patience=max_epochs // 2, lower_is_better=True)]
+        callbacks=[EarlyStopping(monitor='valid_loss', patience=max_epochs // 2, lower_is_better=True)],
+        verbose=0,
     )
 
     params = {
@@ -108,11 +109,14 @@ def gnn_classification(root_dataset: str,
                                           y,
                                           cv=outer_cv,
                                           scoring=scoring,
+                                          verbose=0,
                                           n_jobs=n_cores_cv)
 
         dict_cv_predictions = {k: v.tolist() for k, v in dict(test_predictions).items()}
         trial_predictions.append(dict_cv_predictions)
         save_cv_predictions(file_results, trial_predictions)
+
+        print(test_predictions)
 
 
 def main(args):
