@@ -1,5 +1,6 @@
 import argparse
 import logging
+from typing import List
 
 import numpy as np
 import torch
@@ -19,8 +20,8 @@ logging.captureWarnings(True)
 NODE_ATTRIBUTE = 'x'
 
 
-def _get_k(X: Data, percentile: float = 0.6) -> int:
-    nbr = [graph.num_nodes for graph in X]
+def _get_k(graphs: List[Data], percentile: float = 0.6) -> int:
+    nbr = [graph.num_nodes for graph in graphs]
     sorted_nbr = sorted(nbr)
 
     for i, x in enumerate(sorted_nbr):
@@ -50,17 +51,18 @@ def gnn_classification(root_dataset: str,
                        folder_results: str):
     seed_everything(7)
 
-
     graphs, labels = load_graphs(root=root_dataset,
                                  dataset=dataset,
                                  remove_node_attr=False,
                                  node_attr=NODE_ATTRIBUTE,
                                  use_degree=use_degree)
 
-    data = [from_networkx(graph, [NODE_ATTRIBUTE]) for graph in graphs]
+    graphs = [from_networkx(graph, [NODE_ATTRIBUTE]) for graph in graphs]
     y = np.array(labels).astype(np.int64)
+    ks = [_get_k(graphs, percentile=perc) for perc in [0.6, 0.9]]
+    X = torch.arange(len(graphs)).long()
 
-    max_epochs = 1000
+    max_epochs = 800
     batch_size = 50
 
     net = NeuralNetClassifier(
@@ -69,14 +71,12 @@ def gnn_classification(root_dataset: str,
         optimizer=torch.optim.Adam,
         batch_size=batch_size,
         max_epochs=max_epochs,
-        module__dataset=data,
-        module__dim_features=data[0].num_features,
+        module__dataset=graphs,
+        module__dim_features=graphs[0].num_features,
         module__dim_target=len(set(y)),
         module__hidden_dense_dim=128,
         callbacks=[EarlyStopping(monitor='valid_loss', patience=max_epochs // 2, lower_is_better=True)]
     )
-    ks = [_get_k(data, percentile=perc) for perc in [0.6, 0.9]]
-    X = torch.arange(len(data)).long()
 
     params = {
         'lr': [10 ** -4, 10 ** -5],
@@ -112,69 +112,6 @@ def gnn_classification(root_dataset: str,
         save_cv_predictions(file_results, trial_predictions)
 
 
-#
-# dict_cv_predictions = {k: v.tolist() for k, v in dict(test_predictions).items()}
-# trial_predictions.append(dict_cv_predictions)
-# save_cv_predictions(file_results, trial_predictions)
-
-# params = {
-#     'lr': [0.0001, 0.00001],
-#     'module__embedding_dim': [32, 64],
-#     'module__num_layers': [2, 3, 4],
-#     #         'net__module__num_units': [5, 10, 20, 30],
-#     #         'net__module__dropout': [0, 0.25, 0.5],
-#     #         'net__module__depth': [1, 3, 5, 10],
-# }
-# X = TUDataset(root='./data', name='ENZYMES')
-# X = DataListLoader(X, batch_size=len(X))
-# print(len(X))
-# print(dir(X))
-# print(X)
-# print(np.array(X[0]))
-# print(dir(dataset))
-# X = Dataset(X)
-# print(X[0])
-# scoring = {'acc': 'accuracy',
-#            # 'balanced_acc': 'balanced_accuracy',
-#            # 'f1_macro': 'f1_macro',
-#            # 'f1_micro': 'f1_micro',
-#            # 'precision_macro': 'precision_macro',
-#            # 'recall_macro': 'recall_macro',
-#            }
-#
-# trial_predictions = []
-# file_results = get_file_results(folder_results,
-#                                 dataset=dataset,
-#                                 classifier=classifier,
-#                                 use_degree=use_degree,
-#                                 remove_node_labels=False)
-# #
-# for c_seed in range(n_trials):
-#     outer_cv = StratifiedKFold(n_splits=2, shuffle=True, random_state=c_seed)
-#     inner_cv = StratifiedKFold(n_splits=2, shuffle=True, random_state=c_seed)
-#
-#     gs = GridSearchCV(estimator=net,
-#                       param_grid=params,
-#                       refit=True,
-#                       cv=inner_cv,
-#                       # scoring='accuracy',
-#                       verbose=1,
-#                       n_jobs=1)
-#     # gs.fit([[[gr]] for gr in X], y)
-#     gs.fit(X, y)
-#     # test_predictions = cross_validate(gs,
-#     #                                   X,
-#     #                                   y,
-#     #                                   cv=outer_cv,
-#                                   # scoring=scoring,
-#                                   n_jobs=1,
-#                                   error_score='raise')
-#
-# dict_cv_predictions = {k: v.tolist() for k, v in dict(test_predictions).items()}
-# trial_predictions.append(dict_cv_predictions)
-# save_cv_predictions(file_results, trial_predictions)
-
-
 def main(args):
     """
 
@@ -198,6 +135,9 @@ if __name__ == '__main__':
                         type=str,
                         help='Name of the dataset')
 
+    parser.add_argument('--remove-node-attr',
+                        action='store_true',
+                        help='remove the node attributes if set to false')
     parser.add_argument('--use-degree',
                         action='store_true',
                         help='Use the degree of the nodes during the graph reduction process')
@@ -218,6 +158,15 @@ if __name__ == '__main__':
                         default=5,
                         type=int,
                         help='Number of times to execute the cross-validation')
+
+    parser.add_argument('--n-core-inner',
+                        default=5,
+                        type=int,
+                        help='Number of cores used in the inner loop')
+    parser.add_argument('--n-core-outer',
+                        default=5,
+                        type=int,
+                        help='Number of cores used in the outer loop')
 
     parser.add_argument('--folder-results',
                         type=str,
