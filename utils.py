@@ -83,7 +83,7 @@ def save_cv_predictions(file_results: str, cv_predictions: List) -> None:
         json.dump(cv_predictions, write_file, indent=4)
 
 
-def get_folder_results(dataset: str, classifier: str) -> None:
+def get_folder_results(dataset: str, classifier: str) -> str:
     path = os.path.join('./results',
                         dataset,
                         classifier)
@@ -112,7 +112,8 @@ def get_file_results(folder_results: str,
     else:
         root = folder_results
 
-    Path(root).mkdir(parents=True, exist_ok=True)
+    Path(root).mkdir(parents=True,
+                     exist_ok=True)
 
     degree = '_use_degree' if use_degree else ''
     node_labels = '_without_node_labels' if remove_node_labels else ''
@@ -132,6 +133,8 @@ def load_graphs(root: str,
     Args:
         root:
         dataset:
+        remove_node_attr:
+        use_degree:
         node_attr:
 
     Returns:

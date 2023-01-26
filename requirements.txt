@@ -1,6 +1,6 @@
 scipy
 numpy
-sklearn
+scikit-learn
 networkx
 torch
 tqdm
@@ -9,3 +9,4 @@ matplotlib
 grakel
 Iprogress
 skorch
+pyparsing
