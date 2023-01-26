@@ -1,0 +1,74 @@
+COLLAB --use-degree
+COLLAB 
+IMDB-BINARY --use-degree
+IMDB-BINARY 
+IMDB-MULTI --use-degree
+IMDB-MULTI 
+REDDIT-BINARY --use-degree
+REDDIT-BINARY 
+REDDIT-MULTI-5K --use-degree
+REDDIT-MULTI-5K 
+REDDIT-MULTI-12K --use-degree
+REDDIT-MULTI-12K 
+AIDS --use-degree
+AIDS 
+BZR --use-degree
+BZR 
+BZR_MD --use-degree
+BZR_MD 
+COX2 --use-degree
+COX2 
+COX2_MD --use-degree
+COX2_MD 
+DHFR --use-degree
+DHFR 
+DHFR_MD --use-degree
+DHFR_MD 
+ER_MD --use-degree
+ER_MD 
+MUTAG --use-degree
+MUTAG 
+Mutagenicity --use-degree
+Mutagenicity 
+NCI1 --use-degree
+NCI1 
+NCI109 --use-degree
+NCI109 
+PTC_FM --use-degree
+PTC_FM 
+PTC_FR --use-degree
+PTC_FR 
+PTC_MM --use-degree
+PTC_MM 
+PTC_MR --use-degree
+PTC_MR 
+DD --use-degree
+DD 
+ENZYMES --use-degree
+ENZYMES 
+KKI --use-degree
+KKI 
+OHSU --use-degree
+OHSU 
+Peking_1 --use-degree
+Peking_1 
+PROTEINS_full --use-degree
+PROTEINS_full 
+MSRC_9 --use-degree
+MSRC_9 
+MSRC_21 --use-degree
+MSRC_21 
+FRANKENSTEIN --use-degree
+FRANKENSTEIN 
+PROTEINS --use-degree
+PROTEINS 
+COIL-DEL --use-degree
+COIL-DEL 
+COIL-RAG --use-degree
+COIL-RAG 
+Letter-high --use-degree
+Letter-high 
+Letter-low --use-degree
+Letter-low 
+Letter-med --use-degree
+Letter-med 
