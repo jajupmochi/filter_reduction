@@ -10,9 +10,9 @@ from skorch.callbacks import EarlyStopping
 from torch import nn
 from torch_geometric.data import Data
 from torch_geometric.utils import from_networkx
-from torch_geometric.datasets import TUDataset
+
 from models.DGCNN import DGCNN
-from utils import load_graphs
+from utils import load_graphs, get_file_results, save_cv_predictions
 
 logging.captureWarnings(True)
 
@@ -30,6 +30,16 @@ def _get_k(X: Data, percentile: float = 0.6) -> int:
     return False
 
 
+def seed_everything(seed: int) -> None:
+    import random
+    import numpy as np
+    import torch
+
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+
+
 def gnn_classification(root_dataset: str,
                        dataset: str,
                        use_degree: bool,
@@ -38,77 +48,68 @@ def gnn_classification(root_dataset: str,
                        n_outer_cv: int,
                        n_inner_cv: int,
                        folder_results: str):
+    seed_everything(7)
+
+
     graphs, labels = load_graphs(root=root_dataset,
                                  dataset=dataset,
                                  remove_node_attr=False,
                                  node_attr=NODE_ATTRIBUTE,
                                  use_degree=use_degree)
 
-    dataset = [from_networkx(graph, [NODE_ATTRIBUTE]) for graph in graphs]
+    data = [from_networkx(graph, [NODE_ATTRIBUTE]) for graph in graphs]
     y = np.array(labels).astype(np.int64)
 
-    seed = 42
-    np.random.seed(seed)
-    torch.manual_seed(seed)
+    max_epochs = 1000
+    batch_size = 50
 
     net = NeuralNetClassifier(
         module=DGCNN,
         criterion=nn.CrossEntropyLoss(),
         optimizer=torch.optim.Adam,
-        batch_size=50,
-        max_epochs=1000,
-        module__dataset=dataset,
-        module__dim_features=dataset[0].num_features,
+        batch_size=batch_size,
+        max_epochs=max_epochs,
+        module__dataset=data,
+        module__dim_features=data[0].num_features,
         module__dim_target=len(set(y)),
         module__hidden_dense_dim=128,
-        # verbose=0,
+        callbacks=[EarlyStopping(monitor='valid_loss', patience=max_epochs // 2, lower_is_better=True)]
     )
-    ks = [_get_k(dataset, percentile=perc) for perc in [0.6, 0.9]]
-    early_stoppings = [[EarlyStopping(monitor=temp,
-                                      patience=500,
-                                      threshold=0.0001,
-                                      threshold_mode='rel',
-                                      lower_is_better=low)] for temp, low in [('valid_loss', True), ('valid_acc', False)]]
-    # enzymes = DataListLoader(enzymes, batch_size=1)
-    X = torch.arange(len(dataset)).long()
-    # net.fit(X, y)
-    # for c_seed in range(n_trials):
+    ks = [_get_k(data, percentile=perc) for perc in [0.6, 0.9]]
+    X = torch.arange(len(data)).long()
 
     params = {
         'lr': [10 ** -4, 10 ** -5],
         'module__embedding_dim': [32, 64],
         'module__num_layers': [2, 3, 4],
         'module__k': ks,
-        'callbacks': early_stoppings,
     }
-    scoring = {'acc': 'accuracy',
-#            # 'balanced_acc': 'balanced_accuracy',
-#            # 'f1_macro': 'f1_macro',
-#            # 'f1_micro': 'f1_micro',
-#            # 'precision_macro': 'precision_macro',
-#            # 'recall_macro': 'recall_macro',
-           }
-    c_seed = 1
+    scoring = {'acc': 'accuracy'}
+    file_results = get_file_results(folder_results,
+                                    dataset,
+                                    classifier,
+                                    use_degree,
+                                    False)
+    trial_predictions = []
+    for c_seed in range(n_trials):
+        outer_cv = StratifiedKFold(n_splits=n_outer_cv, shuffle=True, random_state=c_seed)
+        inner_cv = StratifiedKFold(n_splits=n_inner_cv, shuffle=True, random_state=c_seed)
+        gs = GridSearchCV(estimator=net,
+                          param_grid=params,
+                          refit=True,
+                          cv=inner_cv,
+                          scoring='accuracy',
+                          n_jobs=5)
+        test_predictions = cross_validate(gs,
+                                          X,
+                                          y,
+                                          cv=outer_cv,
+                                          scoring=scoring,
+                                          n_jobs=2)
 
-    outer_cv = StratifiedKFold(n_splits=n_outer_cv, shuffle=True, random_state=c_seed)
-    inner_cv = StratifiedKFold(n_splits=n_inner_cv, shuffle=True, random_state=c_seed)
-    gs = GridSearchCV(estimator=net,
-                      param_grid=params,
-                      refit=True,
-                      cv=inner_cv,
-                      scoring='accuracy',
-                      # verbose=0,
-                      n_jobs=5)
-    #     # gs.fit([[[gr]] for gr in X], y)
-    #     gs.fit(X, y)
-    test_predictions = cross_validate(gs,
-                                      X,
-                                      y,
-                                      cv=outer_cv,
-                                      scoring=scoring,
-                                      n_jobs=2)
-
-    print(test_predictions)
+        dict_cv_predictions = {k: v.tolist() for k, v in dict(test_predictions).items()}
+        trial_predictions.append(dict_cv_predictions)
+        save_cv_predictions(file_results, trial_predictions)
 
 
 #
