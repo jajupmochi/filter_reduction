@@ -161,7 +161,7 @@ def load_graphs(root: str,
                 graph.x = degrees
             else:
                 graph.num_nodes = graph.x.shape[0]
-                graph.x = np.ones(graph.num_nodes)
+                graph.x = torch.ones(graph.num_nodes, dtype=torch.float32)
 
         nx_graph = tutils.to_networkx(graph,
                                       node_attrs=[node_attr],
