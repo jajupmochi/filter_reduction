@@ -1,5 +1,7 @@
 import json
 import os
+import warnings
+from os.path import join
 from pathlib import Path
 from typing import List, Tuple
 
@@ -12,8 +14,6 @@ from torch_geometric.data import Data
 from torch_geometric.datasets import TUDataset
 from torch_geometric.utils import degree
 from tqdm import tqdm
-
-import warnings
 
 warnings.filterwarnings('ignore', category=UndefinedMetricWarning)
 
@@ -123,6 +123,24 @@ def get_file_results(folder_results: str,
     return os.path.join(root, filename)
 
 
+def get_folder_distances(folder_results: str,
+                         dataset: str,
+                         classifier: str,
+                         remove_node_attr: bool,
+                         use_degree: bool):
+    if not folder_results:
+        folder_results = get_folder_results(dataset, classifier)
+
+    degree = '_use_degree' if use_degree else ''
+    node_attr = '_without_node_labels' if remove_node_attr else ''
+
+    folder_distances = join(folder_results, f'distances{degree}{node_attr}')
+
+    Path(folder_distances).mkdir(parents=True, exist_ok=True)
+
+    return folder_distances
+
+
 def load_graphs(root: str,
                 dataset: str,
                 remove_node_attr: bool,
@@ -186,3 +204,13 @@ def make_hashable_attr(nx_graphs: List[nx.Graph],
         for idx_node, data_node in nx_graph.nodes(data=True):
             str_data = str(data_node[node_attr])
             nx_graph.nodes[idx_node][node_attr] = str_data
+
+
+def seed_everything(seed: int) -> None:
+    import random
+    import numpy as np
+    import torch
+
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)

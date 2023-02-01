@@ -11,7 +11,7 @@
 #SBATCH --output=/storage/homefs/ag21k209/neo_slurms/clf_nn_%A_%a.out
 #SBATCH --array=1-74
 
-param_store=./arguments_clf_nn.txt
+param_store=./script_nn_arguments.txt
 
 # Get first argument
 dataset_name=$(cat $param_store | awk -v var=$SLURM_ARRAY_TASK_ID 'NR==var {print $1}')
