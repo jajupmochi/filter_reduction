@@ -272,22 +272,13 @@ if __name__ == '__main__':
     parser.add_argument('--classifier',
                         default='ged',
                         help='Classification method to use')
-    #
-    # parser.add_argument('--parameters_edit_cost',
-    #                     nargs='+',
-    #                     default=(1., 1., 1., 1., 'euclidean'),
-    #                     help='Tuple with the cost for the edit operations')
-    # # Hyperparameters to test
-    # parser.add_argument('--alphas',
-    #                     nargs='*',
-    #                     default=DEFAULT_ALPHAS,
-    #                     type=float,
-    #                     help='List of alphas to test')
-    # parser.add_argument('--ks',
-    #                     nargs='*',
-    #                     default=DEFAULT_KS,
-    #                     type=int,
-    #                     help='List of ks to test (k being the number of neighbors for the KNN)')
+
+    # Hyperparameters to test
+    parser.add_argument('--alphas',
+                        nargs='*',
+                        default=ALPHAS,
+                        type=float,
+                        help='List of alphas to test')
 
     # Parameters used during the optimization process
     parser.add_argument('--n-trials',
