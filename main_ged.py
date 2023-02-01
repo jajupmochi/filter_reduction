@@ -168,6 +168,7 @@ def graph_classifier(root_dataset: str,
                      dataset: str,
                      remove_node_attr: bool,
                      use_degree: bool,
+                     alphas: List[float],
                      classifier: str,
                      n_trials: int,
                      n_inner_cv: int,
@@ -223,7 +224,7 @@ def graph_classifier(root_dataset: str,
                                             remove_node_attr,
                                             use_degree)
 
-    distances = load_distances(coordinator, ALPHAS, n_cores, folder_distances)
+    distances = load_distances(coordinator, alphas, n_cores, folder_distances)
     param_grid = {'n_neighbors': KS}
     scoring = {'acc': 'accuracy'}
     trial_results = []
