@@ -63,8 +63,14 @@ def gnn_classification(root_dataset: str,
 
     graphs = [from_networkx(graph, [NODE_ATTRIBUTE]) for graph in graphs]
     y = np.array(labels).astype(np.int64)
-    ks = [_get_k(graphs, percentile=perc) for perc in [0.6, 0.9]]
     X = torch.arange(len(graphs)).long()
+
+    ks = [_get_k(graphs, percentile=perc) for perc in [0.6, 0.9]]
+    # Quick fix
+    # For certain dataset (e.g., COIL-RAG, Letter-high, ...) the graphs are too small.
+    # Thus, the k could be too small and raise an exception
+    if any(k < 10 for k in ks):
+        ks = [10]
 
     batch_size = 50
 

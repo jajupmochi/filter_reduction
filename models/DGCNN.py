@@ -72,8 +72,6 @@ class DGCNN(nn.Module):
 
     def forward(self, index):
 
-        # print(index)
-        # print(self.dataset[index])
         data = Batch.from_data_list([self.dataset[i] for i in index])
         # Implement Equation 4.2 of the paper i.e. concat all layers' graph representations and apply linear model
         # note: this can be decomposed in one smaller linear model per layer

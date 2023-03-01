@@ -162,3 +162,4 @@ data/
 results/
 notebooks/formated_results/
 *.zip
+*.png

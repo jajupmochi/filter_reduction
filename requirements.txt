@@ -6,6 +6,7 @@ torch
 tqdm
 jupyterlab
 matplotlib
+seaborn
 grakel
 Iprogress
 skorch
