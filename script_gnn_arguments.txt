@@ -1,125 +1,57 @@
-AIDS  --use-degree
 AIDS
-BZR  --use-degree
 BZR
-BZR_MD  --use-degree
 BZR_MD
-COX2  --use-degree
 COX2
-COX2_MD  --use-degree
 COX2_MD
-DHFR  --use-degree
 DHFR
-DHFR_MD  --use-degree
 DHFR_MD
-ER_MD  --use-degree
 ER_MD
-MUTAG  --use-degree
 MUTAG
-Mutagenicity  --use-degree
 Mutagenicity
-NCI1  --use-degree
 NCI1
-NCI109  --use-degree
 NCI109
-PTC_FM  --use-degree
 PTC_FM
-PTC_FR  --use-degree
 PTC_FR
-PTC_MM  --use-degree
 PTC_MM
-PTC_MR  --use-degree
 PTC_MR
-DD  --use-degree
 DD
-ENZYMES  --use-degree
 ENZYMES
-KKI  --use-degree
 KKI
-OHSU  --use-degree
 OHSU
-Peking_1  --use-degree
 Peking_1
-PROTEINS_full  --use-degree
 PROTEINS_full
-MSRC_9  --use-degree
 MSRC_9
-MSRC_21  --use-degree
 MSRC_21
-COLLAB  --use-degree
 COLLAB
-IMDB-BINARY  --use-degree
 IMDB-BINARY
-IMDB-MULTI  --use-degree
 IMDB-MULTI
-REDDIT-BINARY  --use-degree
 REDDIT-BINARY
-REDDIT-MULTI-5K  --use-degree
-REDDIT-MULTI-5K
-REDDIT-MULTI-12K  --use-degree
-REDDIT-MULTI-12K
-FRANKENSTEIN  --use-degree
 FRANKENSTEIN
-PROTEINS  --use-degree
 PROTEINS
-COIL-DEL  --use-degree
-COIL-DEL
-COIL-RAG  --use-degree
-COIL-RAG
-Letter-high  --use-degree
-Letter-high
-Letter-low  --use-degree
-Letter-low
-Letter-med  --use-degree
-Letter-med
 AIDS --remove-node-attr --use-degree
-AIDS --remove-node-attr
 BZR --remove-node-attr --use-degree
-BZR --remove-node-attr
 BZR_MD --remove-node-attr --use-degree
-BZR_MD --remove-node-attr
 COX2 --remove-node-attr --use-degree
-COX2 --remove-node-attr
 COX2_MD --remove-node-attr --use-degree
-COX2_MD --remove-node-attr
 DHFR --remove-node-attr --use-degree
-DHFR --remove-node-attr
 DHFR_MD --remove-node-attr --use-degree
-DHFR_MD --remove-node-attr
 ER_MD --remove-node-attr --use-degree
-ER_MD --remove-node-attr
 MUTAG --remove-node-attr --use-degree
-MUTAG --remove-node-attr
 Mutagenicity --remove-node-attr --use-degree
-Mutagenicity --remove-node-attr
 NCI1 --remove-node-attr --use-degree
-NCI1 --remove-node-attr
 NCI109 --remove-node-attr --use-degree
-NCI109 --remove-node-attr
 PTC_FM --remove-node-attr --use-degree
-PTC_FM --remove-node-attr
 PTC_FR --remove-node-attr --use-degree
-PTC_FR --remove-node-attr
 PTC_MM --remove-node-attr --use-degree
-PTC_MM --remove-node-attr
 PTC_MR --remove-node-attr --use-degree
-PTC_MR --remove-node-attr
 DD --remove-node-attr --use-degree
-DD --remove-node-attr
 ENZYMES --remove-node-attr --use-degree
-ENZYMES --remove-node-attr
 KKI --remove-node-attr --use-degree
-KKI --remove-node-attr
 OHSU --remove-node-attr --use-degree
-OHSU --remove-node-attr
 Peking_1 --remove-node-attr --use-degree
-Peking_1 --remove-node-attr
 PROTEINS_full --remove-node-attr --use-degree
-PROTEINS_full --remove-node-attr
 MSRC_9 --remove-node-attr --use-degree
-MSRC_9 --remove-node-attr
 MSRC_21 --remove-node-attr --use-degree
-MSRC_21 --remove-node-attr
 MCF-7
 MCF-7H
 PC-3
@@ -131,6 +63,7 @@ Tox21_ARE_training
 Tox21_aromatase_training
 Tox21_ATAD5_training
 Tox21_ER_training
+Tox21_ER-LBD_training
 Tox21_HSE_training
 Tox21_MMP_training
 Tox21_p53_training
@@ -146,6 +79,7 @@ Tox21_ARE_training --remove-node-attr --use-degree
 Tox21_aromatase_training --remove-node-attr --use-degree
 Tox21_ATAD5_training --remove-node-attr --use-degree
 Tox21_ER_training --remove-node-attr --use-degree
+Tox21_ER-LBD_training --remove-node-attr --use-degree
 Tox21_HSE_training --remove-node-attr --use-degree
 Tox21_MMP_training --remove-node-attr --use-degree
 Tox21_p53_training --remove-node-attr --use-degree

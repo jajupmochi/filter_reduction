@@ -94,7 +94,9 @@ def gnn_classification(root_dataset: str,
         'module__num_layers': [2, 3, 4],
         'module__k': ks,
     }
-    scoring = {'acc': 'accuracy'}
+    scoring = {'acc': 'accuracy',
+               'balanced_acc': 'balanced_accuracy',
+               }
     file_results = get_file_results(folder_results,
                                     dataset,
                                     classifier,

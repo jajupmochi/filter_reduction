@@ -7,7 +7,7 @@
 #SBATCH --cpus-per-task=18
 #SBATCH --time=3-23:59:00
 #SBATCH --output=/storage/homefs/ag21k209/neo_slurms/re_clf_gnn_%A_%a.out
-#SBATCH --array=123-156
+#SBATCH --array=1-86
 
 param_store=./script_gnn_arguments.txt
 
