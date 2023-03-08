@@ -16,8 +16,8 @@ from itertools import product
 
 datasets = ['MCF-7', 'MCF-7H', 'PC-3', 'PC-3H',
             'deezer_ego_nets',
-            'Tox21_AhR_training', 'Tox21_AR_training', 'Tox21_AR-LBD_training', 'Tox21_ARE_training',
-            'Tox21_aromatase_training', 'Tox21_ATAD5_training', 'Tox21_ER_training', 'Tox21_ER-LBD_training',
+            'Tox21_AhR_training', 'Tox21_AR_training', 'Tox21_ARE_training',
+            'Tox21_aromatase_training', 'Tox21_ATAD5_training', 'Tox21_ER_training',
             'Tox21_HSE_training', 'Tox21_MMP_training', 'Tox21_p53_training', 'Tox21_PPAR-gamma_training',
             ]
 # use_degrees = [True]  # , False]

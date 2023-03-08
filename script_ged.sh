@@ -7,7 +7,7 @@
 #SBATCH --cpus-per-task=10
 #SBATCH --time=3-23:59:00
 #SBATCH --output=/storage/homefs/ag21k209/neo_slurms/clf_ged_%A_%a.out
-#SBATCH --array=123-156
+#SBATCH --array=1-88
 
 param_store=./script_ged_arguments.txt
 
