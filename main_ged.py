@@ -228,7 +228,8 @@ def graph_classifier(root_dataset: str,
     param_grid = {'n_neighbors': KS}
     scoring = {'acc': 'accuracy',
                'balanced_acc': 'balanced_accuracy',
-               'f1_macro': 'f1_macro',}
+               #'f1_macro': 'f1_macro',
+               }
     trial_results = []
 
     for c_seed in range(n_trials):
