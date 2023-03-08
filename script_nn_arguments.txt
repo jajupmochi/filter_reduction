@@ -72,3 +72,20 @@ Letter-low --use-degree
 Letter-low 
 Letter-med --use-degree
 Letter-med 
+MCF-7
+MCF-7H
+PC-3
+PC-3H
+deezer_ego_nets
+21_AhR_training
+Tox21_AR_training
+Tox21_AR-LBD_training
+Tox21_ARE_training
+21_aromatase_training
+Tox21_ATAD5_training
+Tox21_ER_training
+Tox21_ER-LBD_training
+21_HSE_training
+Tox21_MMP_training
+Tox21_p53_training
+Tox21_PPAR-gamma_training

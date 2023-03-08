@@ -16,8 +16,8 @@ from subprocess import run
 #             'deezer_ego_nets']
 
 datasets = [
-    'Tox21_AhR', 'Tox21_AR', 'Tox21_AR-LBD', 'Tox21_ARE', 'Tox21_aromatase', 'Tox21_ATAD5', 'Tox21_ER', 'Tox21_ER-LBD',
-    'Tox21_HSE', 'Tox21_MMP', 'Tox21_p53', 'Tox21_PPAR-gamma',
+    'Tox21_AhR_training', 'Tox21_AR_training', 'Tox21_AR-LBD_training', 'Tox21_ARE_training', 'Tox21_aromatase_training', 'Tox21_ATAD5_training', 'Tox21_ER_training', 'Tox21_ER-LBD_training',
+    'Tox21_HSE_training', 'Tox21_MMP_training', 'Tox21_p53_training', 'Tox21_PPAR-gamma_training',
 ]
 
 use_degrees = [False]  # [True, False]
