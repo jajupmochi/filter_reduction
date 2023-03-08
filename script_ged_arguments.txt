@@ -127,7 +127,6 @@ PC-3H
 deezer_ego_nets
 Tox21_AhR_training
 Tox21_AR_training
-Tox21_AR-LBD_training
 Tox21_ARE_training
 Tox21_aromatase_training
 Tox21_ATAD5_training
@@ -144,7 +143,6 @@ PC-3H --remove-node-attr --use-degree
 deezer_ego_nets --remove-node-attr --use-degree
 Tox21_AhR_training --remove-node-attr --use-degree
 Tox21_AR_training --remove-node-attr --use-degree
-Tox21_AR-LBD_training --remove-node-attr --use-degree
 Tox21_ARE_training --remove-node-attr --use-degree
 Tox21_aromatase_training --remove-node-attr --use-degree
 Tox21_ATAD5_training --remove-node-attr --use-degree
