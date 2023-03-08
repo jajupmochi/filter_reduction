@@ -34,6 +34,7 @@ def gk_classification(root_dataset: str,
                                     node_attr=NODE_ATTRIBUTE,
                                     remove_node_attr=remove_node_attr,
                                     use_degree=use_degree)
+    print(nx_graphs[0].nodes(data=True))
     make_hashable_attr(nx_graphs, node_attr='x')
     grakel_graphs = [graph for graph in graph_from_networkx(nx_graphs,
                                                             node_labels_tag='x',

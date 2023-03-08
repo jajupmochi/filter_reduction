@@ -37,6 +37,22 @@ def load_singleton_graphs_from_TUDataset(root: str,
     Returns:
         List of the loaded `np.ndarray` singleton graphs and `np.ndarray` of the corresponding class of each graph
     """
+    # Handle the Tox21 datatasets
+    if dataset.startswith('Tox21'):
+        dataset += '_training'
+        # if dataset.split('_')[-1] not in ['training', 'testing', 'evaluation']:
+        #     tr_graphs, tr_lbls = load_singleton_graphs_from_TUDataset(root, dataset + '_training',
+        #                                                               use_degree=use_degree, node_attr=node_attr)
+        #     va_graphs, va_lbls = load_singleton_graphs_from_TUDataset(root, dataset + '_testing', use_degree=use_degree,
+        #                                                               node_attr=node_attr)
+        #     te_graphs, te_lbls = load_singleton_graphs_from_TUDataset(root, dataset + '_evaluation',
+        #                                                               use_degree=use_degree, node_attr=node_attr)
+        #
+        #     graphs = tr_graphs + va_graphs + te_graphs
+        #     labels = np.concatenate((tr_lbls, va_lbls, te_lbls), axis=None)
+        #
+        #     return graphs, labels
+
     dataset = TUDataset(root=root, name=dataset)
 
     tmp_graph = dataset[0]
@@ -158,6 +174,19 @@ def load_graphs(root: str,
     Returns:
 
     """
+    # Handle the Tox21 datatasets
+    if dataset.startswith('Tox21'):
+        dataset +=
+        # if dataset.split('_')[-1] not in ['training', 'testing', 'evaluation']:
+        #     tr_graphs, tr_lbls = load_graphs(root, dataset + '_training', remove_node_attr, use_degree, node_attr)
+        #     va_graphs, va_lbls = load_graphs(root, dataset + '_testing', remove_node_attr, use_degree, node_attr)
+        #     te_graphs, te_lbls = load_graphs(root, dataset + '_evaluation', remove_node_attr, use_degree, node_attr)
+        #
+        #     graphs = tr_graphs + va_graphs + te_graphs
+        #     labels = np.concatenate((tr_lbls, va_lbls, te_lbls), axis=None)
+        #
+        #     return graphs, labels
+
     dataset = TUDataset(root=root, name=dataset)
 
     tmp_graph = dataset[0]
