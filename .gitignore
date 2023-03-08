@@ -161,5 +161,9 @@ cython_debug/
 data/
 results/
 notebooks/formated_results/
+notebooks/formated_results_use_degree/
+notebooks/formated_results_use_degree_without_node_labels/
+notebooks/formated_results_without_node_labels/
+tmp_res_check_bug/
 *.zip
 *.png
