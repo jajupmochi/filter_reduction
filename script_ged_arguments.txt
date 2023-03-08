@@ -120,3 +120,37 @@ MSRC_9 --remove-node-attr --use-degree
 MSRC_9 --remove-node-attr
 MSRC_21 --remove-node-attr --use-degree
 MSRC_21 --remove-node-attr
+MCF-7
+MCF-7H
+PC-3
+PC-3H
+deezer_ego_nets
+21_AhR_training
+Tox21_AR_training
+Tox21_AR-LBD_training
+Tox21_ARE_training
+21_aromatase_training
+Tox21_ATAD5_training
+Tox21_ER_training
+Tox21_ER-LBD_training
+21_HSE_training
+Tox21_MMP_training
+Tox21_p53_training
+Tox21_PPAR-gamma_training
+MCF-7 --remove-node-attr --use-degree
+MCF-7H --remove-node-attr --use-degree
+PC-3 --remove-node-attr --use-degree
+PC-3H --remove-node-attr --use-degree
+deezer_ego_nets --remove-node-attr --use-degree
+21_AhR_training --remove-node-attr --use-degree
+Tox21_AR_training --remove-node-attr --use-degree
+Tox21_AR-LBD_training --remove-node-attr --use-degree
+Tox21_ARE_training --remove-node-attr --use-degree
+21_aromatase_training --remove-node-attr --use-degree
+Tox21_ATAD5_training --remove-node-attr --use-degree
+Tox21_ER_training --remove-node-attr --use-degree
+Tox21_ER-LBD_training --remove-node-attr --use-degree
+21_HSE_training --remove-node-attr --use-degree
+Tox21_MMP_training --remove-node-attr --use-degree
+Tox21_p53_training --remove-node-attr --use-degree
+Tox21_PPAR-gamma_training --remove-node-attr --use-degree
